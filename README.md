@@ -13,6 +13,11 @@ ninja -C build ZeonCAPI_Shared # After it is done you can find the lib as build/
 ```
 ```ts
 import { initZeonDB, ZeonDB, Key } from "zeonic";
+/* It is not ready yet to be on npm
+ * I had to be quick with this so for now just get the `index.ts` file
+ * and import stuff from that
+ */
+
 
 initZeonDB("libZeonCAPI.so"); // you must run this!
 
