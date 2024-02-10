@@ -15,16 +15,15 @@ const db = new ZeonDB("127.0.0.1", 6748);
 // cached key
 const docRef = Key("users").setBranch("theo");
 
-const data = [
-	create_blog("blog", "amogus", "this will kill my pc for sure".split(" ")),
-];
+const data = Array(32768).fill(create_blog("blog", "amogus", "this will kill my pc for sure".split(" ")))
+console.log(JSON.stringify(data).length);
 
 if (await db.login("admin", "admin")) {
 	let res = await db.set(docRef, data);
 
 	res = await db.get(docRef);
 	if (res.ok) {
-		console.log(res.value);
+		// console.log(res.value);
 	} else {
 		throw new Error(res.msg);
 	}
@@ -77,11 +76,12 @@ if (await db.login("admin", "admin")) {
     res = await db.get(Key("users"));
 
     if (res.ok) {
-        console.log(res.value);
+        // console.log(res.value);
     } else {
         throw new Error(res.msg);
     }
 
+    /*
     res = await db.delete(Key("users"));
     console.log("Users were deleted!");
 
@@ -90,6 +90,7 @@ if (await db.login("admin", "admin")) {
 	} else {
 		throw new Error(res.msg);
 	}
+    */
 
     const company_template = {
         name: "",
