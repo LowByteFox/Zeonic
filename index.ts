@@ -20,7 +20,7 @@ export function initZeonDB(path: string): void {
 			"ZeonAPI_Connection_is_up":
 			{
 				args: ["ptr"],
-				returns: "void",
+				returns: "i32",
 			},
 			"ZeonAPI_Connection_get_error":
 			{
@@ -60,6 +60,7 @@ interface ZeonKey {
 	setBranch: (branch: string) => ZeonKey,
 	setIndex: (index: number) => ZeonKey,
 	chainWith: (key: ZeonKey) => ZeonKey,
+    clone: () => ZeonKey,
 	stringify: () => string,
 }
 
@@ -120,6 +121,14 @@ export function Key(pth: string): ZeonKey {
 			this.index = index;
 			return this;
 		},
+
+        clone: function() {
+            let new_k = Key(this.path);
+            new_k.branch = this.branch;
+            new_k.index = this.index;
+            new_k.next = this.next;
+            return new_k;
+        },
 
 		chainWith: function(next: ZeonKey) {
 			this.next = next;
@@ -312,6 +321,22 @@ export class ZeonDB {
         }
 
         return this.newResult(await this.exec("options print"));
+    }
+
+    public async array_push(key: Key, value: unknown): Promise<ZeonResult> {
+        return this.newResult(await this.exec(`array push ${key.stringify()} ${JSON.stringify(value)}`));
+    }
+
+    public async array_insert(key: Key, index: number, value: unknown): Promise<ZeonResult> {
+        return this.newResult(await this.exec(`array insert ${key.stringify()} ${index} ${JSON.stringify(value)}`));
+    }
+
+    public async array_erase(key: Key, index: number): Promise<ZeonResult> {
+        return this.newResult(await this.exec(`array erase ${key.stringify()} ${index}`));
+    }
+
+    public async array_length(key: Key): Promise<ZeonResult> {
+        return this.newResult(await this.exec(`array length ${key.stringify()}`));
     }
 
     public async auth(req: AuthRequest): Promise<ZeonResult> {
